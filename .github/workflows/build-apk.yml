@@ -41,15 +41,15 @@ jobs:
           chmod +x gradlew
           ls -la gradle/wrapper/
 
-      - name: Run Unit Tests
-        run: |
-          set -o pipefail
-          ./gradlew test --stacktrace 2>&1 | tee test_output.log
-
       - name: Build Debug APK
         run: |
           set -o pipefail
           ./gradlew assembleDebug --stacktrace 2>&1 | tee build_output.log
+
+      - name: Run Unit Tests
+        run: |
+          set -o pipefail
+          ./gradlew testDebugUnitTest --stacktrace 2>&1 | tee test_output.log
 
       - name: Verify Debug APK
         run: |
@@ -110,17 +110,25 @@ jobs:
           cat << 'EOF' > error_report.md
           ## CI Build / Test Failure
 
-          ### Test Output (last 200 lines):
+          ### Kotlin / Compiler Errors:
           ```
           EOF
-          if [ -f test_output.log ]; then tail -n 200 test_output.log >> error_report.md; fi
+          if [ -f build_output.log ]; then grep -B 1 -A 3 -E "(e: |error:|Compilation error|FAILURE:|Caused by:)" build_output.log | head -n 120 >> error_report.md || true; fi
+          if [ -f test_output.log ]; then grep -B 1 -A 3 -E "(e: |error:|Compilation error|FAILURE:|Caused by:)" test_output.log | head -n 120 >> error_report.md || true; fi
           cat << 'EOF' >> error_report.md
           ```
 
-          ### Build Output (last 200 lines):
+          ### Build Output Tail:
           ```
           EOF
-          if [ -f build_output.log ]; then tail -n 200 build_output.log >> error_report.md; fi
+          if [ -f build_output.log ]; then tail -n 500 build_output.log >> error_report.md; fi
+          cat << 'EOF' >> error_report.md
+          ```
+
+          ### Test Output Tail:
+          ```
+          EOF
+          if [ -f test_output.log ]; then tail -n 500 test_output.log >> error_report.md; fi
           cat << 'EOF' >> error_report.md
           ```
           EOF
