@@ -1,0 +1,96 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Generate Gradle Wrapper
+        run: gradle wrapper --gradle-version 8.7
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run Unit Tests
+        run: ./gradlew test --stacktrace
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Verify Debug APK
+        run: |
+          if [ ! -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
+            echo "Error: Debug APK was not generated at expected location!"
+            exit 1
+          fi
+          echo "Debug APK built successfully."
+
+      - name: Upload Debug APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: orvia-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION_NAME=$(grep 'versionName = ' app/build.gradle.kts | head -n1 | sed -E 's/.*"([^"]+)".*/\1/')
+          if [ -z "$VERSION_NAME" ]; then
+            VERSION_NAME="1.0.0"
+          fi
+          TAG_NAME="v${VERSION_NAME}"
+          echo "Target Release Tag: $TAG_NAME"
+
+          APK_RELEASE_NAME="Orvia-${TAG_NAME}-debug.apk"
+          cp app/build/outputs/apk/debug/app-debug.apk "$APK_RELEASE_NAME"
+
+          # Check if release or tag already exists
+          if gh release view "$TAG_NAME" > /dev/null 2>&1; then
+            echo "Release $TAG_NAME already exists. Uploading/clobbering asset..."
+            gh release upload "$TAG_NAME" "$APK_RELEASE_NAME" --clobber
+          else
+            echo "Creating new GitHub Release $TAG_NAME..."
+            cat << 'EOF' > release_notes.md
+          ## Orvia Android Chat + Builder + Master Prompt Generator
+
+          ### What's New
+          - **Three Modes**: Ask Anything, Builder (App & Website), and Master Prompt Generator.
+          - **AI Providers**: Google Gemini, Groq, OpenRouter, and Unlimited Custom OpenAI-compatible endpoints with real live API calling.
+          - **Streaming**: Typing effect with word-by-word streaming, thinking timer, markdown, and syntax-highlighted code blocks.
+          - **Adaptive Questioning**: 12 to 20 live adaptive questions for Builder and Master Prompt interviews.
+          - **Project Tools**: File tree viewer, zip export, red/green diff editor, undo history, and GitHub direct repo push.
+          - **Encrypted Storage**: Secure API key & GitHub token storage backed by Android Keystore.
+          - **Widget**: Home screen widget for one-tap new chat.
+          EOF
+            gh release create "$TAG_NAME" "$APK_RELEASE_NAME" \
+              --title "Orvia $TAG_NAME" \
+              --notes-file release_notes.md
+          fi
