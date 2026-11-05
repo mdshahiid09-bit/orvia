@@ -102,11 +102,11 @@ fun ChatScreen(
                 chats = allChats,
                 currentChatId = uiState.currentChat?.id,
                 onSelectChat = { id -> viewModel.selectChat(id) },
-                onDeleteChat = { id -> viewModel.startNewChat() },
-                onDeleteMultipleChats = { ids -> },
-                onRenameChat = { id, title -> },
-                onTogglePin = { id, pin -> },
-                onToggleArchive = { id, arc -> },
+                onDeleteChat = { id -> viewModel.deleteChat(id) },
+                onDeleteMultipleChats = { ids -> viewModel.deleteMultipleChats(ids) },
+                onRenameChat = { id, title -> viewModel.renameChat(id, title) },
+                onTogglePin = { id, pin -> viewModel.togglePin(id, pin) },
+                onToggleArchive = { id, arc -> viewModel.toggleArchive(id, arc) },
                 onClose = { scope.launch { drawerState.close() } }
             )
         }

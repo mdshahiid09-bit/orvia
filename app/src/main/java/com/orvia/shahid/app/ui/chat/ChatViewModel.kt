@@ -429,4 +429,40 @@ class ChatViewModel @Inject constructor(
             sendMessage(lastUser.content, lastUser.imageUris)
         }
     }
+
+    fun deleteChat(chatId: String) {
+        viewModelScope.launch {
+            chatRepository.deleteChat(chatId)
+            if (_uiState.value.currentChat?.id == chatId) {
+                startNewChat()
+            }
+        }
+    }
+
+    fun deleteMultipleChats(chatIds: List<String>) {
+        viewModelScope.launch {
+            chatRepository.deleteChats(chatIds)
+            if (chatIds.contains(_uiState.value.currentChat?.id)) {
+                startNewChat()
+            }
+        }
+    }
+
+    fun renameChat(chatId: String, newTitle: String) {
+        viewModelScope.launch {
+            chatRepository.updateChatTitle(chatId, newTitle)
+        }
+    }
+
+    fun togglePin(chatId: String, isPinned: Boolean) {
+        viewModelScope.launch {
+            chatRepository.togglePin(chatId, isPinned)
+        }
+    }
+
+    fun toggleArchive(chatId: String, isArchived: Boolean) {
+        viewModelScope.launch {
+            chatRepository.toggleArchive(chatId, isArchived)
+        }
+    }
 }

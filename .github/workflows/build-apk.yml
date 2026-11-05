@@ -11,6 +11,7 @@ on:
 permissions:
   contents: write
   packages: write
+  issues: write
 
 jobs:
   build:
@@ -26,22 +27,23 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.7'
-
-      - name: Generate Gradle Wrapper
-        run: gradle wrapper --gradle-version 8.7
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Setup Gradle 8.7 Binary & Generate Wrapper
+        run: |
+          echo "Downloading Gradle 8.7 distribution..."
+          curl -sSL https://services.gradle.org/distributions/gradle-8.7-bin.zip -o gradle-dist.zip
+          unzip -q gradle-dist.zip
+          ./gradle-8.7/bin/gradle wrapper --gradle-version 8.7
+          chmod +x gradlew
+          rm -rf gradle-dist.zip gradle-8.7
+          ls -la gradle/wrapper/
 
       - name: Run Unit Tests
-        run: ./gradlew test --stacktrace
+        run: |
+          ./gradlew test --stacktrace 2>&1 | tee test_output.log
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: |
+          ./gradlew assembleDebug --stacktrace 2>&1 | tee build_output.log
 
       - name: Verify Debug APK
         run: |
@@ -49,7 +51,7 @@ jobs:
             echo "Error: Debug APK was not generated at expected location!"
             exit 1
           fi
-          echo "Debug APK built successfully."
+          echo "Debug APK built successfully at app/build/outputs/apk/debug/app-debug.apk"
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
@@ -58,7 +60,7 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
-      - name: Create GitHub Release
+      - name: Create or Update GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -72,7 +74,6 @@ jobs:
           APK_RELEASE_NAME="Orvia-${TAG_NAME}-debug.apk"
           cp app/build/outputs/apk/debug/app-debug.apk "$APK_RELEASE_NAME"
 
-          # Check if release or tag already exists
           if gh release view "$TAG_NAME" > /dev/null 2>&1; then
             echo "Release $TAG_NAME already exists. Uploading/clobbering asset..."
             gh release upload "$TAG_NAME" "$APK_RELEASE_NAME" --clobber
@@ -94,3 +95,27 @@ jobs:
               --title "Orvia $TAG_NAME" \
               --notes-file release_notes.md
           fi
+
+      - name: Report Error on Failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat << 'EOF' > error_report.md
+          ## CI Build / Test Failure
+
+          ### Test Output (last 200 lines):
+          ```
+          EOF
+          if [ -f test_output.log ]; then tail -n 200 test_output.log >> error_report.md; fi
+          cat << 'EOF' >> error_report.md
+          ```
+
+          ### Build Output (last 200 lines):
+          ```
+          EOF
+          if [ -f build_output.log ]; then tail -n 200 build_output.log >> error_report.md; fi
+          cat << 'EOF' >> error_report.md
+          ```
+          EOF
+          gh issue create --title "CI Build Failure Log" --body-file error_report.md || true

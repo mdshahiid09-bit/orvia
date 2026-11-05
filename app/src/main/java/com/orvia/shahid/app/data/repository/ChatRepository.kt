@@ -54,7 +54,7 @@ class ChatRepository @Inject constructor(
     suspend fun saveMessage(message: ChatMessage) {
         val entity = message.toEntity(gson)
         messageDao.insertMessage(entity)
-        chatDao.updateTitle(message.chatId, message.chatId, updatedAt = System.currentTimeMillis())
+        chatDao.updateChatTimestamp(message.chatId, System.currentTimeMillis())
     }
 
     suspend fun saveDraft(chatId: String, draft: String) {
@@ -62,7 +62,7 @@ class ChatRepository @Inject constructor(
     }
 
     suspend fun updateChatTitle(chatId: String, title: String) {
-        chatDao.updateTitle(chatId, title)
+        chatDao.updateTitle(chatId, title, System.currentTimeMillis())
     }
 
     suspend fun togglePin(chatId: String, isPinned: Boolean) {
@@ -89,6 +89,9 @@ class ChatRepository @Inject constructor(
         messageDao.clearAllMessages()
     }
 
+    /**
+     * Automatically generates a concise 3-5 word title using the active AI provider.
+     */
     suspend fun generateTitleIfDefault(chatId: String, firstUserMessage: String, firstAiResponse: String) {
         try {
             val prompt = "Create a short 3 to 5 word title for a conversation that starts with this user query: '$firstUserMessage'. Output only the title text, with no quotes or punctuation."
@@ -108,11 +111,14 @@ class ChatRepository @Inject constructor(
 
             val generatedTitle = titleBuilder.toString().trim().replace("\"", "").replace("\n", " ")
             if (generatedTitle.isNotBlank() && generatedTitle.length < 50) {
-                chatDao.updateTitle(chatId, generatedTitle)
+                chatDao.updateTitle(chatId, generatedTitle, System.currentTimeMillis())
             }
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+            // Keep default title if title generation fails
+        }
     }
 
+    // Converters
     private fun ChatEntity.toDomain() = ChatSession(
         id = id,
         title = title,

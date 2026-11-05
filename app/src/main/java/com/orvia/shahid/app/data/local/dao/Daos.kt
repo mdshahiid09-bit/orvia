@@ -45,7 +45,10 @@ interface ChatDao {
     suspend fun clearAllChats()
 
     @Query("UPDATE chats SET title = :title, updatedAt = :updatedAt WHERE id = :id")
-    suspend fun updateTitle(id: String, title: String, updatedAt: Long = System.currentTimeMillis())
+    suspend fun updateTitle(id: String, title: String, updatedAt: Long)
+
+    @Query("UPDATE chats SET updatedAt = :updatedAt WHERE id = :id")
+    suspend fun updateChatTimestamp(id: String, updatedAt: Long)
 
     @Query("UPDATE chats SET draft = :draft WHERE id = :id")
     suspend fun updateDraft(id: String, draft: String)
