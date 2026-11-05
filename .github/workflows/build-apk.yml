@@ -27,22 +27,28 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Gradle 8.7 Binary & Generate Wrapper
+      - name: Install Gradle 8.7 & Setup Wrapper
         run: |
-          echo "Downloading Gradle 8.7 distribution..."
-          curl -sSL https://services.gradle.org/distributions/gradle-8.7-bin.zip -o gradle-dist.zip
-          unzip -q gradle-dist.zip
-          ./gradle-8.7/bin/gradle wrapper --gradle-version 8.7
+          echo "Installing Gradle 8.7..."
+          curl -sSL https://services.gradle.org/distributions/gradle-8.7-bin.zip -o /tmp/gradle.zip
+          sudo mkdir -p /opt/gradle
+          sudo unzip -q -d /opt/gradle /tmp/gradle.zip
+          sudo ln -sf /opt/gradle/gradle-8.7/bin/gradle /usr/local/bin/gradle
+          rm /tmp/gradle.zip
+          gradle --version
+          gradle wrapper --gradle-version 8.7
+          gradle --stop
           chmod +x gradlew
-          rm -rf gradle-dist.zip gradle-8.7
           ls -la gradle/wrapper/
 
       - name: Run Unit Tests
         run: |
+          set -o pipefail
           ./gradlew test --stacktrace 2>&1 | tee test_output.log
 
       - name: Build Debug APK
         run: |
+          set -o pipefail
           ./gradlew assembleDebug --stacktrace 2>&1 | tee build_output.log
 
       - name: Verify Debug APK
