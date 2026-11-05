@@ -6,8 +6,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -99,33 +99,33 @@ private fun UserMessageBubble(message: ChatMessage) {
     ) {
         Column(
             modifier = Modifier
-                .widthIn(max = 320.dp)
-                .clip(RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp, bottomStart = 18.dp, bottomEnd = 4.dp))
+                .fillMaxWidth(0.85f)
+                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 4.dp, bottomStart = 16.dp, bottomEnd = 16.dp))
                 .background(UserBubbleDark)
-                .border(0.5.dp, Color(0xFF352B58), RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp, bottomStart = 18.dp, bottomEnd = 4.dp))
-                .padding(14.dp)
+                .border(1.dp, Color(0xFF3E3167), RoundedCornerShape(topStart = 16.dp, topEnd = 4.dp, bottomStart = 16.dp, bottomEnd = 16.dp))
+                .padding(12.dp),
+            horizontalAlignment = Alignment.End
         ) {
-            // Images if any
+            Text(
+                text = message.content,
+                fontSize = 14.5.sp,
+                color = Color.White,
+                lineHeight = 21.sp
+            )
+
+            // Attached images
             if (message.imageUris.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
                 message.imageUris.forEach { uri ->
                     AsyncImage(
                         model = uri,
-                        contentDescription = "User image",
+                        contentDescription = null,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(160.dp)
+                            .size(140.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .padding(bottom = 8.dp)
                     )
                 }
             }
-
-            Text(
-                text = message.content,
-                color = Color.White,
-                fontSize = 15.sp,
-                lineHeight = 21.sp
-            )
         }
     }
 }
@@ -135,47 +135,19 @@ private fun AiMessageContent(
     message: ChatMessage,
     onRetry: () -> Unit
 ) {
+    var thinkingExpanded by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(end = 12.dp, start = 4.dp)
+            .padding(horizontal = 4.dp)
     ) {
-        // AI Header / Provider Info
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 4.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(20.dp)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(BrandPrimary),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_orb_logo),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(14.dp)
-                )
-            }
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                text = message.providerUsed ?: "Orvia AI",
-                color = BrandCyan,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-
-        // Thinking Card (if reasoning exists)
+        // Thinking Collapsible Card (if model reasoning is present)
         if (!message.rawReasoning.isNullOrBlank()) {
-            var thinkingExpanded by remember { mutableStateOf(false) }
-
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 6.dp),
+                    .padding(bottom = 8.dp),
                 shape = RoundedCornerShape(10.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF140F26))
             ) {
@@ -197,16 +169,14 @@ private fun AiMessageContent(
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = stringResource(R.string.thinking_toggle),
-                                color = BrandAccent,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontSize = 12.5.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = BrandAccent
                             )
                         }
 
                         Icon(
-                            painter = painterResource(
-                                id = if (thinkingExpanded) R.drawable.ic_chevron_up else R.drawable.ic_chevron_down
-                            ),
+                            painter = painterResource(id = R.drawable.ic_chevron_right),
                             contentDescription = null,
                             tint = Color.Gray,
                             modifier = Modifier.size(16.dp)
@@ -216,8 +186,8 @@ private fun AiMessageContent(
                     AnimatedVisibility(visible = thinkingExpanded) {
                         Text(
                             text = message.rawReasoning,
-                            color = Color(0xFFB8B0D3),
                             fontSize = 12.sp,
+                            color = Color(0xFFB5B2C7),
                             lineHeight = 17.sp,
                             modifier = Modifier.padding(top = 8.dp)
                         )
@@ -226,94 +196,74 @@ private fun AiMessageContent(
             }
         }
 
-        // Error inline card with Retry
+        // Markdown Formatted Message
+        MarkdownText(
+            markdown = message.content,
+            textColor = Color(0xFFF0EFF5)
+        )
+
+        // Error Card (if generation error occurred)
         if (message.isError) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 6.dp),
-                shape = RoundedCornerShape(10.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF2A1118))
+                    .padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF2C1318)),
+                shape = RoundedCornerShape(10.dp)
             ) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text(
-                        text = stringResource(R.string.error_card_title),
-                        color = DiffRemoveRed,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = message.content,
-                        color = Color.White,
-                        fontSize = 13.sp
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(R.string.error_card_title),
+                            color = DiffRemoveRed,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = message.content,
+                            color = Color(0xFFFFB4AB),
+                            fontSize = 12.sp
+                        )
+                    }
+
                     OutlinedButton(
                         onClick = onRetry,
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                        shape = RoundedCornerShape(8.dp)
                     ) {
-                        Icon(painter = painterResource(id = R.drawable.ic_refresh), contentDescription = null, modifier = Modifier.size(14.dp))
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(stringResource(R.string.retry_action), fontSize = 12.sp)
-                    }
-                }
-            }
-        } else {
-            // Main Markdown Content (ChatGPT-style left-aligned full width)
-            MarkdownText(
-                markdown = message.content,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        // Image Output if generated
-        if (message.imageUris.isNotEmpty()) {
-            message.imageUris.forEach { uri ->
-                Column(modifier = Modifier.padding(top = 8.dp)) {
-                    AsyncImage(
-                        model = uri,
-                        contentDescription = "Generated image",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(240.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                    )
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 6.dp),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        OutlinedButton(
-                            onClick = { /* save to gallery */ },
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White)
-                        ) {
-                            Icon(painter = painterResource(id = R.drawable.ic_download), contentDescription = null, modifier = Modifier.size(14.dp))
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(stringResource(R.string.save_to_gallery), fontSize = 11.sp)
-                        }
+                        Icon(painter = painterResource(id = R.drawable.ic_retry), contentDescription = null, modifier = Modifier.size(14.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(stringResource(R.string.retry_action), fontSize = 11.sp)
                     }
                 }
             }
         }
 
-        // Token count & response time below reply
-        if (message.outputTokens != null || message.responseTimeMs != null) {
-            val tokens = (message.inputTokens ?: 0) + (message.outputTokens ?: 0)
-            val timeFormatted = if ((message.responseTimeMs ?: 0L) > 0) "${(message.responseTimeMs ?: 0L) / 1000.0}s" else ""
-            val info = stringResource(
-                R.string.response_info_format,
-                message.modelUsed ?: "AI",
-                tokens,
-                timeFormatted
-            )
+        // Footer: Latency, Token Count, Provider Name
+        val totalTokens = (message.inputTokens ?: 0) + (message.outputTokens ?: 0)
+        val responseSec = (message.responseTimeMs ?: 0L) / 1000.0
+        val latencyFormatted = "%.1fs".format(responseSec)
+        val providerTag = message.providerUsed ?: message.modelUsed ?: "Orvia AI"
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
-                text = info,
-                color = Color.Gray,
+                text = stringResource(
+                    R.string.response_info_format,
+                    latencyFormatted,
+                    totalTokens,
+                    providerTag
+                ),
                 fontSize = 11.sp,
-                modifier = Modifier.padding(top = 6.dp)
+                color = Color(0xFF7E7A91)
             )
         }
     }
