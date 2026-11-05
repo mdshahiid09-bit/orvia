@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Identity & Modes -->
+    <string name="app_name">Orvia</string>
+    <string name="mode_ask_anything">Ask Anything</string>
+    <string name="mode_builder">Builder</string>
+    <string name="mode_master_prompt">Master Prompt</string>
+    <string name="action_new_chat">New Chat</string>
+    <string name="model_label">Model</string>
+    <string name="model_switch_hint">Switch active model in Settings</string>
+
+    <!-- Top Bar & Drawer -->
+    <string name="drawer_title_chats">Conversations</string>
+    <string name="search_chats_hint">Search chats by title…</string>
+    <string name="pin_chat">Pin</string>
+    <string name="unpin_chat">Unpin</string>
+    <string name="archive_chat">Archive</string>
+    <string name="unarchive_chat">Unarchive</string>
+    <string name="delete_chat">Delete</string>
+    <string name="rename_chat">Rename</string>
+    <string name="rename_chat_title">Rename Chat</string>
+    <string name="enter_new_title">Enter new title</string>
+    <string name="multi_select_delete">Delete Selected</string>
+    <string name="multi_select_count">%1$d selected</string>
+    <string name="no_chats_found">No chats found</string>
+
+    <!-- Empty Chat & Suggestions -->
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="empty_chat_subtitle_ask">Ask anything in English, Hindi, or Hinglish.</string>
+    <string name="empty_chat_subtitle_builder">Describe your app or website to begin the architecture interview.</string>
+    <string name="empty_chat_subtitle_master_prompt">Scope your idea through adaptive questions into a master prompt.</string>
+    <string name="suggestion_ask_1">Explain quantum physics with everyday analogies</string>
+    <string name="suggestion_ask_2">Write a complete modern Jetpack Compose theme in Kotlin</string>
+    <string name="suggestion_ask_3">Hinglish mein best business ideas batao jo 2026 mein kaam karein</string>
+    <string name="suggestion_builder_1">Build a personal habit tracker Android app with Compose &amp; Room</string>
+    <string name="suggestion_builder_2">Create a responsive portfolio website with HTML, CSS, and dark mode</string>
+    <string name="suggestion_builder_3">Generate a PHP REST API with SQLite database for a note-taking app</string>
+    <string name="suggestion_prompt_1">Master prompt for an AI-powered fitness and meal planning app</string>
+    <string name="suggestion_prompt_2">Master prompt for a cross-platform crypto portfolio tracker</string>
+    <string name="suggestion_prompt_3">Master prompt for an offline-first markdown notes application</string>
+
+    <!-- Input Bar -->
+    <string name="input_hint_ask">Type a message in Hindi, English, Hinglish…</string>
+    <string name="input_hint_builder">Describe what you want to build…</string>
+    <string name="input_hint_prompt">Describe your project idea…</string>
+    <string name="attach_files">Attach</string>
+    <string name="web_search_toggle">Web Search</string>
+    <string name="thinking_toggle">Thinking Mode</string>
+    <string name="action_send">Send</string>
+    <string name="action_stop">Stop</string>
+    <string name="voice_input">Voice Input</string>
+    <string name="clear_text">Clear</string>
+    <string name="builder_mode_chip">Builder</string>
+
+    <!-- Message Actions -->
+    <string name="copy_message">Copy</string>
+    <string name="edit_message">Edit &amp; Resend</string>
+    <string name="share_message">Share</string>
+    <string name="toast_copied">Copied to clipboard</string>
+    <string name="retry_action">Retry</string>
+    <string name="error_card_title">Generation Error</string>
+    <string name="thinking_shimmer">Thinking…</string>
+    <string name="response_info_format">%1$s • %2$d tokens • %3$s</string>
+    <string name="save_to_gallery">Save to Gallery</string>
+    <string name="regenerate_image">Regenerate</string>
+    <string name="image_saved">Image saved to gallery</string>
+
+    <!-- Live Work Summary -->
+    <string name="summary_title">Live Work Summary</string>
+    <string name="step_progress">Step %1$d of %2$d</string>
+    <string name="files_changed">Files Changed</string>
+    <string name="lines_added_removed">+%1$d / -%2$d lines</string>
+    <string name="errors_and_fixes">Errors &amp; Fixes</string>
+    <string name="step_thinking">Reasoning &amp; Analyzing…</string>
+    <string name="step_completed">Completed</string>
+    <string name="step_running">In Progress</string>
+
+    <!-- Adaptive Questions & Builder -->
+    <string name="question_counter">Question %1$d of %2$d</string>
+    <string name="select_an_option">Select an option</string>
+    <string name="select_multiple_options">Select all that apply</string>
+    <string name="type_your_answer">Type your answer…</string>
+    <string name="action_next">Next</string>
+    <string name="action_skip">Skip</string>
+    <string name="action_finish">Generate Project</string>
+    <string name="action_generate_master_prompt">Generate Master Prompt</string>
+    <string name="file_card_open">Open</string>
+    <string name="file_card_download">Download</string>
+    <string name="file_card_share">Share</string>
+    <string name="code_viewer_title">Project Code Viewer</string>
+    <string name="export_zip">Export ZIP</string>
+    <string name="commit_and_push">Commit &amp; Push</string>
+    <string name="push_to_github_title">Push to GitHub</string>
+    <string name="repo_name_label">Repository Name</string>
+    <string name="repo_visibility_label">Visibility</string>
+    <string name="visibility_public">Public</string>
+    <string name="visibility_private">Private</string>
+    <string name="push_success">Pushed successfully to GitHub!</string>
+    <string name="error_fix_button">Fix Error</string>
+    <string name="undo_action">Undo</string>
+    <string name="file_tree_title">Files</string>
+
+    <!-- Master Prompt Generator -->
+    <string name="master_prompt_title">Master Prompt</string>
+    <string name="master_prompt_diff_title">Review Changes</string>
+    <string name="accept_changes">Accept Changes</string>
+    <string name="reject_changes">Discard Changes</string>
+    <string name="refine_action">Refine</string>
+    <string name="version_history">Version History</string>
+    <string name="version_label">Version %1$d</string>
+    <string name="lines_diff_stat">+%1$d added, -%2$d removed</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="tab_providers">Providers</string>
+    <string name="tab_chat">Chat</string>
+    <string name="tab_memory">Memory</string>
+    <string name="tab_github">GitHub</string>
+    <string name="tab_appearance">Appearance</string>
+    <string name="tab_sound">Sound &amp; Haptics</string>
+    <string name="tab_data">Data</string>
+    <string name="tab_about">About</string>
+    <string name="api_key_label">API Key</string>
+    <string name="test_connection">Test Connection</string>
+    <string name="test_success">Connection successful (HTTP %1$d)</string>
+    <string name="test_failed">Connection failed: %1$s</string>
+    <string name="openrouter_free_only">Free models only</string>
+    <string name="search_models_hint">Search models…</string>
+    <string name="gemini_thinking_level">Gemini Thinking Level</string>
+    <string name="gemini_safety_settings">Safety Threshold</string>
+    <string name="custom_providers_title">Custom Providers</string>
+    <string name="add_custom_provider">Add Provider</string>
+    <string name="edit_custom_provider">Edit Provider</string>
+    <string name="provider_name">Provider Name</string>
+    <string name="base_url">Base URL</string>
+    <string name="model_id">Model ID</string>
+    <string name="auth_header_type">Auth Header Type</string>
+    <string name="extra_headers">Extra Headers (JSON)</string>
+    <string name="temperature">Temperature</string>
+    <string name="max_tokens">Max Tokens</string>
+    <string name="fallback_order_title">Fallback Order</string>
+    <string name="default_model_label">Default Model</string>
+    <string name="system_instructions_label">Global System Instructions</string>
+    <string name="font_size_label">Font Size</string>
+    <string name="typing_speed_label">Typing Speed</string>
+    <string name="memory_title">Long-Term Memory</string>
+    <string name="memory_add">Add Memory</string>
+    <string name="memory_hint">Enter knowledge for Orvia to remember across chats…</string>
+    <string name="github_token_label">GitHub Personal Access Token</string>
+    <string name="test_token">Test Token</string>
+    <string name="theme_mode_label">Theme</string>
+    <string name="theme_system">System Default</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="animations_toggle">Enable Animations</string>
+    <string name="haptics_toggle">Haptic Feedback</string>
+    <string name="sound_toggle">Sound Effects</string>
+    <string name="voice_lang_label">Voice Input Language</string>
+    <string name="clear_all_chats">Clear All Chats</string>
+    <string name="clear_all_data">Clear All Data</string>
+    <string name="confirm_clear_title">Confirm Deletion</string>
+    <string name="confirm_clear_message">This action cannot be undone. Are you sure you want to proceed?</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="app_version_label">Version</string>
+    <string name="licenses_label">Open Source Licenses</string>
+    <string name="api_key_required_notice">No API key configured. Please configure an API key in Settings to use this provider.</string>
+    <string name="go_to_settings">Go to Settings</string>
+</resources>
