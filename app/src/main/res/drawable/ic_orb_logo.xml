@@ -1,0 +1,56 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <path
+        android:pathData="M48,6 A42,42 0 1,0 48,90 A42,42 0 1,0 48,6 Z"
+        android:strokeWidth="4"
+        android:strokeAlpha="0.4">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:angle="45"
+                android:endColor="#00B0FF"
+                android:startColor="#7C4DFF"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M48,16 A32,32 0 1,0 48,80 A32,32 0 1,0 48,16 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:centerX="40"
+                android:centerY="40"
+                android:endColor="#1E1238"
+                android:gradientRadius="34"
+                android:startColor="#B388FF"
+                android:type="radial" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M22,48 C22,34 34,22 48,22 C62,22 74,34 74,48"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:endColor="#00E5FF"
+                android:startColor="#651FFF"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M74,48 C74,62 62,74 48,74 C34,74 22,62 22,48"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:endColor="#7C4DFF"
+                android:startColor="#00B0FF"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M48,38 L50.5,45.5 L58,48 L50.5,50.5 L48,58 L45.5,50.5 L38,48 L45.5,45.5 Z"
+        android:fillColor="#FFFFFF" />
+</vector>
