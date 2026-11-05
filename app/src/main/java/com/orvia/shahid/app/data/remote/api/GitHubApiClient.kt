@@ -65,7 +65,7 @@ class GitHubApiClient(
                 .build()
 
             val response = okHttpClient.newCall(request).execute()
-            if (response.isSuccessful || response.code == 422) {
+            if (response.isSuccessful || response.code == 422) { // 422: Repo might already exist
                 val json = response.body?.string() ?: ""
                 val repo = gson.fromJson(json, GitHubRepoDto::class.java)
                 Result.success(repo)
@@ -106,7 +106,7 @@ class GitHubApiClient(
 
                 val putPayload = GitHubCreateFileRequest(
                     message = commitMessage,
-                    content = base64,
+                    base64Content = base64,
                     branch = "main",
                     sha = sha
                 )
